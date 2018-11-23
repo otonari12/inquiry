@@ -1,7 +1,7 @@
 package main
 
 import (
-	"inquiry-api/inquiry"
+	"inquiry-api/api"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -16,8 +16,8 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// ルーティング
-	e.POST("/inquiry", inquiry.Post())
-	e.GET("/inquiry", inquiry.Get())
+	e.POST("/inquiry", api.Post())
+	e.GET("/inquiry", api.Get())
 
 	// サーバー起動
 	e.Start(":1323") //ポート番号指定してね
