@@ -2,6 +2,7 @@ package inquiry
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/go-gorp/gorp"
 	_ "github.com/go-sql-driver/mysql"
@@ -9,7 +10,7 @@ import (
 
 // 問い合わせ項目
 type InquiryItem struct {
-	ID     string `json:"id", primarykey, autoincrement`
+	ID     int    `json:"id", primarykey, autoincrement`
 	Title  string `json:"title"`
 	Detail string `json:"detail"`
 }
@@ -33,18 +34,21 @@ func (inquiry InquiryItem) Save() {
 	dbmap := open()
 	defer dbmap.Db.Close()
 
-	err := dbmap.Insert(inquiry)
+	fmt.Println(inquiry)
+
+	err := dbmap.Insert(&inquiry)
 	if err != nil {
 		panic(err.Error())
 	}
 }
 
 func open() *gorp.DbMap {
-	db, err := sql.Open("mysql", "user:password@tcp(localhost:3306)/inquiry?parseTime=true")
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/inquiry?parseTime=true")
 	if err != nil {
 		panic(err.Error())
 	}
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
+	dbmap.AddTableWithName(InquiryItem{}, "inquiry")
 
 	return dbmap
 }
