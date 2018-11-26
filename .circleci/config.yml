@@ -46,6 +46,7 @@ jobs:
       - image: circleci/python:2.7-jessie
     working_directory: /working
     steps:
+    - run: mkdir -p /go/src/inquiry-api/.circleci
     - attach_workspace:
         at: /go/src/inquiry-api/.circleci
     - run: ls
