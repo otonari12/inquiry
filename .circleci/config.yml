@@ -48,7 +48,6 @@ jobs:
     steps:
     - attach_workspace:
         at: .
-    - run: ls
     - setup_remote_docker
     - run: sudo pip install awscli
     - run: $(aws ecr get-login --region ap-northeast-1 --no-include-email)
@@ -57,7 +56,7 @@ jobs:
         command: |
             cd ~/.circleci
             docker build . -t inquiry-api
-    - run: docker tag inquiry-api:$CIRCLE_SHA1 ${AWS_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/inquiry-api:$CIRCLE_SHA1
+    - run: docker tag inquiry-api ${AWS_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/inquiry-api:$CIRCLE_SHA1
     - run: docker push ${AWS_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/inquiry-api:$CIRCLE_SHA1
 
 workflows:
