@@ -5,18 +5,10 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version
       - image: circleci/golang:1.9
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
+    environment:
+      GOOS: linux
+      GOARCH: amd64
     working_directory: /go/src/inquiry-api
     steps:
       - checkout
@@ -37,14 +29,39 @@ jobs:
           key: v1-vendor-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
           paths:
               - src/vendor
-
-      # depをキャッシュする
       - save_cache:
           key: v1-dep
           paths:
               - /go/bin/dep
-
       - run:
           name: go build
           command: |
-              go build
+              go build -o .circleci/inquiery-api
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .circleci
+  push:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /
+    steps:
+    - attach_workspace:
+        at: .
+    - setup_remote_docker
+    - run: sudo pip install awscli
+    - run: $(aws ecr get-login --region ap-northeast-1 --no-include-email)
+    - run:
+        name: create docker image
+        command: |
+            cd .circleci
+            docker build . -t inquiry-api
+    - run: docker tag inquiry-api:$CIRCLE_SHA1 ${AWS_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/inquiry-api:$CIRCLE_SHA1
+    - run: docker push ${AWS_ID}.dkr.ecr.ap-northeast-1.amazonaws.com/inquiry-api:$CIRCLE_SHA1
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build
+    - push
