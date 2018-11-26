@@ -16,9 +16,9 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// ルーティング
-	e.POST("/inquiry", api.Post())
-	e.GET("/inquiry", api.Get())
+	e.POST("/api/inquiry", api.Post())
+	e.GET("/api/inquiry", api.Get())
 
 	// サーバー起動
-	e.Start(":1323") //ポート番号指定してね
+	e.Start(":8090") //ポート番号指定してね
 }
