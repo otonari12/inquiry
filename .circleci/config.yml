@@ -11,6 +11,8 @@ jobs:
       GOARCH: amd64
     working_directory: /go/src/inquiry-api
     steps:
+      - attach_workspace:
+          at: /go/src/inquiry-api
       - checkout
       - restore_cache:
           keys:
