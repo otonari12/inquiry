@@ -48,7 +48,6 @@ jobs:
       - image: circleci/python:2.7-jessie
     working_directory: /go/src/inquiry-api
     steps:
-    - run: mkdir -p /go/src/inquiry-api
     - attach_workspace:
         at: /go/src/inquiry-api
     - setup_remote_docker
