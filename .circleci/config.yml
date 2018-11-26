@@ -64,4 +64,6 @@ workflows:
   workflow:
     jobs:
     - build
-    - push
+    - push:
+        requires:
+        - build
