@@ -44,7 +44,7 @@ jobs:
   push:
     docker:
       - image: circleci/python:2.7-jessie
-    working_directory: /
+    working_directory: /working
     steps:
     - attach_workspace:
         at: .
