@@ -38,19 +38,17 @@ jobs:
         command: |
             go build -o .circleci/inquiery-api
     - persist_to_workspace:
-        root: /go/src/inquiry-api/.circleci
+        root: .circleci
         paths:
           - .
   push:
     docker:
       - image: circleci/python:2.7-jessie
-    working_directory: /working
+    working_directory: /go/src/inquiry-api
     steps:
-    - run: mkdir -p /go/src/inquiry-api/.circleci
     - attach_workspace:
-        at: /go/src/inquiry-api/.circleci
+        at: .circleci
     - run: ls
-    - run: ls /go/src/inquiry-api/.circleci
     - setup_remote_docker
     - run: sudo pip install awscli
     - run: $(aws ecr get-login --region ap-northeast-1 --no-include-email)
