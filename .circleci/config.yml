@@ -11,45 +11,45 @@ jobs:
       GOARCH: amd64
     working_directory: /go/src/inquiry-api
     steps:
-      - attach_workspace:
-          at: /go/src/inquiry-api
-      - checkout
-      - restore_cache:
-          keys:
-              - v1-vendor-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
-              - v1-dep
-      - run:
-          name: dep ensure
-          command: |
-              if [ ! -d vendor ]; then
-                if ! type dep >/dev/null 2>&1; then
-                  go get -u github.com/golang/dep/cmd/dep
-                fi
-                dep ensure
+    - attach_workspace:
+        at: /go/src/inquiry-api
+    - checkout
+    - restore_cache:
+        keys:
+            - v1-vendor-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
+            - v1-dep
+    - run:
+        name: dep ensure
+        command: |
+            if [ ! -d vendor ]; then
+              if ! type dep >/dev/null 2>&1; then
+                go get -u github.com/golang/dep/cmd/dep
               fi
-      - save_cache:
-          key: v1-vendor-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
-          paths:
-              - src/vendor
-      - save_cache:
-          key: v1-dep
-          paths:
-              - /go/bin/dep
-      - run:
-          name: go build
-          command: |
-              go build -o .circleci/inquiery-api
-      - persist_to_workspace:
-          root: /go/src/inquiry-api
-          paths:
-            - .circleci
+              dep ensure
+            fi
+    - save_cache:
+        key: v1-vendor-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
+        paths:
+            - src/vendor
+    - save_cache:
+        key: v1-dep
+        paths:
+            - /go/bin/dep
+    - run:
+        name: go build
+        command: |
+            go build -o .circleci/inquiery-api
+    - persist_to_workspace:
+        root: /go/src/inquiry-api
+        paths:
+          - .circleci
   push:
     docker:
       - image: circleci/python:2.7-jessie
     working_directory: /go/src/inquiry-api
     steps:
     - run: mkdir -p /go/src/inquiry-api
-    - attach_workspace: /go/src/inquiry-api
+    - attach_workspace:
         at: /go/src/inquiry-api
     - setup_remote_docker
     - run: sudo pip install awscli
