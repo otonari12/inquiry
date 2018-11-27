@@ -9,6 +9,7 @@ jobs:
     environment:
       GOOS: linux
       GOARCH: amd64
+      CGO_ENABLED: 0
     working_directory: /go/src/inquiry-api
     steps:
     - checkout
@@ -36,7 +37,7 @@ jobs:
     - run:
         name: go build
         command: |
-            go build -o .circleci/inquiery-api
+            go build -o .circleci/inquiry-api
     - persist_to_workspace:
         root: .
         paths:

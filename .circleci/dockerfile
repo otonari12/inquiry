@@ -1,5 +1,5 @@
 FROM alpine
 RUN apk add --no-cache ca-certificates
-COPY inquiery-api /inquiery-api
+COPY inquiry-api /inquiry-api
 EXPOSE 8090
-ENTRYPOINT ["/inquiery-api"]
+ENTRYPOINT ["/inquiry-api"]
